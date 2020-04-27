@@ -19,6 +19,11 @@ service.interceptors.response.use(res=>{
         message.error(res.data.errMsg)
     }
 })
-export const getArticle = ()=>{
-    return service.post("/api/v1/articleList")
+//请求文章的列表数据
+export const getArticle = (offset,limited)=>{
+    return service.post("/api/v1/articleList",{offset,limited})
+}
+//删除文章
+export const deleteArticleById = id =>{
+    return service.post(`/api/v1/articleDelete/${id}`)
 }

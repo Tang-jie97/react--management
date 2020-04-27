@@ -2,6 +2,7 @@ import React,{Component,Fragment} from 'react';
 import {adminRoute} from './routes'
 import {Route,Switch,Redirect} from 'react-router-dom'
 import Frame from './components/frame'
+
 export default class App extends Component{
     render(){
         return(
