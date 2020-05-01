@@ -14,6 +14,8 @@ class index extends Component {
         this.props.history.push(key)
     }
     render() {
+        let selectedKeysArr =this.props.location.pathname.split("/")
+        selectedKeysArr.length=3
         return (
             <Layout>
                 <Header className="header t-header">
@@ -32,7 +34,7 @@ class index extends Component {
                             <Menu
                                 mode="inline"
                                 defaultSelectedKeys={[menu[0].pathname]}
-                                selectedKeys={[this.props.location.pathname]}
+                                selectedKeys={[selectedKeysArr.join("/")]}
                                 style={{ height: '100%' }}
                                 onClick={this.handleMenu}
                             >
