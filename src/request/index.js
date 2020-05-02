@@ -27,3 +27,12 @@ export const getArticle = (offset,limited)=>{
 export const deleteArticleById = id =>{
     return service.post(`/api/v1/articleDelete/${id}`)
 }
+//根据id查询
+export const getArticleDetailById =(id)=>{
+    return service.post(`/api/v1/article/${id}`)
+}
+
+//根据id与对应的入参进行文章保存
+export const saveArticleById = (id,data)=>{
+    return service.post(`/api/v1/articlesave/${id}`,data)
+}

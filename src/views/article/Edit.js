@@ -1,7 +1,9 @@
 import React, { Component,createRef } from 'react'
-import { Form, Input, Button,Card,DatePicker } from 'antd';
+import { Form, Input, Button,Card,DatePicker,message,Spin} from 'antd';
 import E from "wangeditor"
 import "./index.less"
+import {getArticleDetailById,saveArticleById} from '../../request'
+import moment from '../../../node_modules/moment/moment';
 const layout = {
     labelCol:{
         xs:{span:24},
@@ -20,6 +22,7 @@ export default class Edit extends Component {
         super()
         this.contentRef = createRef()
         this.formRef = createRef()
+        this.state= {isloading:false}
     }
     initEditor = ()=>{
         this.editor = new E(this.contentRef.current) 
@@ -38,10 +41,33 @@ export default class Edit extends Component {
         if(!this.props.location.state && !localStorage.getItem("title")){
             this.props.history.push("/admin/article")
         }
+        //初始化富文本编辑器
         this.initEditor()
+        this.setState({isloading:true})
+        //异步请求文章详情
+        getArticleDetailById(this.props.match.params.id).then(res=>{
+            this.formRef.current.setFieldsValue({
+                title:res.title,
+                amount:res.amount,
+                author:res.author,
+                currentAt:moment(res.currentAt),
+                content:res.content
+            })
+            this.editor.txt.html(res.content)
+        }).finally(()=>{
+            this.setState({isloading:false})
+        })
     }
     onFinish = values => {
         console.log('Success:', values);
+        values.currentAt = values.currentAt.valueOf()
+        saveArticleById(this.props.match.params.id,values).then(res=>{
+            message.success(res.msg)
+            
+        }).finally(()=>{
+            this.setState({isloading:false})
+            this.props.history.push("/admin/article")
+        })
     };
     onFinishFailed = errorInfo => {
         console.log('Failed:', errorInfo);
@@ -53,6 +79,7 @@ export default class Edit extends Component {
                 title={state && state.title} 
                 extra={<Button onClick={()=>this.props.history.goBack()}>返回</Button>} 
             >
+                <Spin spinning={this.state.isloading}>
                 <Form
                 ref={this.formRef}
                 {...layout}
@@ -116,6 +143,8 @@ export default class Edit extends Component {
                     </Button>
                 </Form.Item>
             </Form>
+                </Spin>
+                
             </Card>
         )
     }
