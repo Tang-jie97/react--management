@@ -4,7 +4,8 @@ import{
     Dashboard,
     Login,
     Settings,
-    Notfound
+    Notfound,
+    Notifications
 } from "../views"
 import {
     DashboardOutlined,
@@ -39,6 +40,9 @@ export const adminRoute = [
     },{
         pathname:"/admin/article/edit/:id",
         component:ArticleEdit
+    },{
+        pathname:"/admin/notifications",
+        component:Notifications
     },{
         pathname:"/admin/settings",
         component:Settings,

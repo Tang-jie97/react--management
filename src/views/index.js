@@ -26,11 +26,16 @@ const Notfound = Loadable({
     loader: () =>import('./notfound'),
     loading:Loading,
 })
+const Notifications = Loadable({
+    loader: () =>import('./notifications'),
+    loading:Loading,
+})
 export{
     Article,
     ArticleEdit,
     Dashboard,
     Login,
     Settings,
-    Notfound
+    Notfound,
+    Notifications
 }

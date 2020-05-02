@@ -1,15 +1,39 @@
 import React, { Component } from 'react'
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Layout, Menu, Breadcrumb,Dropdown ,Avatar,Badge} from 'antd';
 // import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import Logo from './logo.png'
 import "./index.less"
 import {adminRoute} from "../../routes"
 import {withRouter} from 'react-router-dom'
+import {DownOutlined} from '@ant-design/icons'
+
 const menu = adminRoute.filter(route=>route.isNav === true)
 const { Header, Content, Footer, Sider } = Layout;
 
 @withRouter
 class index extends Component {
+    handleMenuClick= ({key})=>{
+        console.log(key)
+        this.props.history.push(key)
+    }
+    menu = ()=>{
+        return(
+            <Menu onClick={this.handleMenuClick}>
+            <Menu.Item key={"/admin/notifications"}>
+                <Badge dot>
+                通知中心
+                </Badge>
+               
+            </Menu.Item>
+            <Menu.Item key={"/admin/settings"}>
+                个人设置
+            </Menu.Item>
+            <Menu.Item key={"/admin/login"}>
+                退出
+            </Menu.Item>
+          </Menu>
+        )
+    }
     handleMenu=({ key })=>{
         this.props.history.push(key)
     }
@@ -22,6 +46,15 @@ class index extends Component {
                     <div className="logo">
                         <img src={Logo} alt="logo"/>
                     </div>
+                    <Dropdown overlay={this.menu}>
+                        <div className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                        <Badge count={10}>
+                            <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                            <span>个人中心</span>
+                            <DownOutlined />
+                        </Badge>
+                        </div>
+                    </Dropdown>
                 </Header>
                 <Content style={{ padding: '0 50px' }}>
                     <Breadcrumb style={{ margin: '16px 0' }}>
