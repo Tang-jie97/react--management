@@ -6,12 +6,21 @@ import "./index.less"
 import {adminRoute} from "../../routes"
 import {withRouter} from 'react-router-dom'
 import {DownOutlined} from '@ant-design/icons'
-
+import {connect} from 'react-redux'
+import {getNotificationsData} from "../../actions//notifications"
 const menu = adminRoute.filter(route=>route.isNav === true)
 const { Header, Content, Footer, Sider } = Layout;
-
+const mapsState = state=>{
+    return{
+        notificationsCount:state.notifications.list.filter(item=>item.hasRead === false).length
+    }
+}
+@connect(mapsState,{getNotificationsData})
 @withRouter
 class index extends Component {
+    componentDidMount(){
+        this.props.getNotificationsData()
+    }
     handleMenuClick= ({key})=>{
         console.log(key)
         this.props.history.push(key)
@@ -20,7 +29,7 @@ class index extends Component {
         return(
             <Menu onClick={this.handleMenuClick}>
             <Menu.Item key={"/admin/notifications"}>
-                <Badge dot>
+                <Badge dot={Boolean(this.props.notificationsCount)}>
                 通知中心
                 </Badge>
                
@@ -48,7 +57,7 @@ class index extends Component {
                     </div>
                     <Dropdown overlay={this.menu}>
                         <div className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                        <Badge count={10}>
+                        <Badge count={this.props.notificationsCount}>
                             <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                             <span>个人中心</span>
                             <DownOutlined />

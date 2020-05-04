@@ -1,48 +1,64 @@
 import React, { Component } from 'react'
-import {Card,Button,List,Badge} from "antd"
-const data = [
-    {
-      title: '统一一下时间安排，四点到蜀南庭苑美食广场，买菜买酒等',
-    },
-    {
-      title: '后面还有什么娱乐安排大家再想想，可以提前来，尽量不要来迟，希望大家可以来玩的开心',
-    },
-    {
-      title: '来早发信息给我我会接的',
-    },
-    {
-      title: '希望大家可以来早点，哈哈牛逼',
-    },
-    {
-        title: '明天天比较热，都注意点，口罩也带着',
-    },
-    {
-        title: '尽量不要在我屋吸烟，我女朋友很介意，理解一下',
-    },
-    {
-        title: '欢迎补充',
+import {Card,Button,List,Badge,Spin} from "antd"
+import {connect} from "react-redux"
+import {markNotificationsById,markNotificationsAll} from "../../actions/notifications"
+// const data = [
+//     {
+//       title: 'Ant Design Title 1',
+//     },
+//     {
+//       title: 'Ant Design Title 2',
+//     },
+//     {
+//       title: 'Ant Design Title 3',
+//     },
+//     {
+//       title: 'Ant Design Title 4',
+//     },
+// ];
+
+const mapState = state=>{
+    return {
+        list:state.notifications.list,
+        isLoading:state.notifications.isLoading
     }
-  ];
-export default class index extends Component {
+}
+
+@connect(mapState,{markNotificationsById,markNotificationsAll})
+class index extends Component {
     render() {
+        console.log(this.props)
         return (
-            <Card
-            title={"通知中心"}
-            extra={<Button>全部标记为已读</Button>}
-            >
-               <List
-                    itemLayout="horizontal"
-                    dataSource={data}
-                    renderItem={item => (
-                    <List.Item>
-                        <List.Item.Meta
-                        title={<Badge dot>{item.title}</Badge>}
-                        />
-                        <Button>标记为已读</Button>
-                    </List.Item>
-                    )}
-                />,
-            </Card>
+            <Spin spinning={this.props.isLoading}>
+                <Card
+                    title={"通知中心"}
+                    extra={<Button 
+                        disabled={this.props.list.every(item=>item.hasRead===true)}
+                        onClick={this.props.markNotificationsAll}
+                    >全部标记为已读</Button>}
+                >
+                    <List
+                        itemLayout="horizontal"
+                        dataSource={this.props.list}
+                        renderItem={item => (
+                            <List.Item>
+                                <List.Item.Meta
+                                    title={<Badge dot={!item.hasRead}>{item.title}</Badge>}
+                                    description={item.desc}
+                                />
+                                {item.hasRead ? "" : <Button onClick={this.props.markNotificationsById.bind(this,item.id)}>标记为已读</Button>}
+                            </List.Item>
+                        )}
+                    />
+                </Card>
+            </Spin>
         )
     }
 }
+
+export default index
+
+
+//every  some reduce filter map forEach xx
+// var arr = [{id:1,hasRead:true},{id:2,hasRead:true}]
+// console.log(arr.every(item=>item.hasRead===true))  //如果每一项都已读了，那么结果是true
